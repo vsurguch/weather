@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/index.css') }}">
+    <title>World weather at a glance</title>
+</head>
+<body>
+<div class="mainArea">
+    <h1>World weather at a glance</h1>
+    <div class="tab">
+        <button class="tablinks" onclick="openMap(event, 'temp')" id="openDefault">Tempreture</button>
+        <button class="tablinks" onclick="openMap(event, 'precip')">Precipitation</button>
+        <button class="tablinks" onclick="openMap(event, 'pressure')">Pressure</button>
+    </div>
+
+    <div id="temp" class="tabcontent">
+        <p>Tempreture</p>
+        <img src="{{ url_for('static',filename='DSC_0003.jpg') }}">
+    </div>
+    <div id="precip" class="tabcontent">
+        <p>Precipitation</p>
+        <img src="{{ url_for('static',filename='DSC_0003.jpg') }}">
+    </div>
+    <div id="pressure" class="tabcontent">
+        <p>Pressure</p>
+        <img src="{{ url_for('static',filename='DSC_0003.jpg') }}">
+    </div>
+    <div class="myWeather">
+        <form name="form1" onsubmit="buttonClick(); return false;">
+                <input type="text" name="city">
+                <input type="button" value="Узнать" onclick="buttonClick()">
+        </form>
+        <div id="myWeatherResults">
+            <p>This is to be updated</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openMap(ev, map){
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++){
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++){
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(map).style.display = "block";
+        ev.currentTarget.className += " active";
+    }
+
+    document.getElementById("openDefault").click()
+
+</script>
+
+<script>
+    function buttonClick(){
+        var city = document.forms["form1"]["city"].value;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("myWeatherResults").innerHTML = this.responseText;
+                document.getElementById("myWeatherResults").style.display = "block"
+            }
+        };
+        xhttp.open("GET", "/getWeatherByName/"+city, true);
+        xhttp.send();
+    }
+</script>
+
+</body>
+</html>
